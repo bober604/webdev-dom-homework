@@ -67,6 +67,7 @@
     </div>
 
     <script>
+
       document.addEventListener("DOMContentLoaded", function() {
         const addButton = document.querySelector('.add-form-button');
   
@@ -86,87 +87,145 @@
   
         const parentList = document.getElementById('comment-list');
         const currentDateTime = getCurrentDateTime();
-  
-        const newComment = document.createElement('li');
-        newComment.className = 'comment';
-  
-        const commentHeader = document.createElement('div');
-        commentHeader.className = 'comment-header';
-        commentHeader.textContent = commenterName;
-  
-        const commentDate = document.createElement('div');
-        commentDate.className = 'comment-date';
-        commentDate.textContent = currentDateTime;
-  
-        const headerContainer = document.createElement('div');
-        headerContainer.appendChild(commentHeader);
-        headerContainer.appendChild(commentDate);
-        headerContainer.classList.add('comment-header');
-  
-        const commentBody = document.createElement('div');
-        commentBody.className = 'comment-body';
-  
-        const commentTextDiv = document.createElement('div');
-        commentTextDiv.className = 'comment-text';
-        commentTextDiv.textContent = commentText;
-  
-        commentBody.appendChild(commentTextDiv);
-  
 
-        // Создаем кнопку лайка и счётчик ❤
-        const grandLikeContainer = document.createElement('div'); // Главный родительский блок
-        grandLikeContainer.classList.add('likes-footer');
+        const newCommentHTML = `
+          <li class="comment">
+            <div class="comment-header">
+              <div>${commenterName}</div>
+              <div>${currentDateTime}</div>
+            </div>
+            <div class="comment-body">
+              <div class="comment-text">${commentText}</div>
+            </div>
+            <div class="comment-footer">
+              <div class="likes">
+                <span class="likes-counter">0</span>
+                <button class="like-button"></button>
+              </div>
+            </div>
+          </li>
+        `;
 
-        const likeContainer = document.createElement('div'); // Родительский блок
-        likeContainer.classList.add('reverse');
-
-        const likeButton = document.createElement('button'); // Дочерний элемент, кнопка
-        likeButton.classList.add('like-button');
-
-        const likeCounter = document.createElement('span'); // Дочерний элемент, счётчик
-        likeCounter.classList.add('like-counter');
-
-        // Добавляем кнопку и счётчик в родительский блок
-        likeContainer.appendChild(likeButton);
-        likeContainer.appendChild(likeCounter);
-
-        // Добавляем родительский блок в главный родительский блок
-        grandLikeContainer.appendChild(likeContainer);
-
-        // Добавляем главный родительский блок в тело комментария
-        newComment.appendChild(headerContainer);
-        newComment.appendChild(commentBody);
-        newComment.appendChild(grandLikeContainer);
-
-        parentList.appendChild(newComment);
-
-        let count = 0;
-
-        likeButton.addEventListener('click', function() {
-          if (!likeButton.classList.contains('-active-like')) {
-            // Если лайка еще нет, то добавляем его и увеличиваем счетчик
-            count++;
-            likeCounter.textContent = count;
-            likeButton.classList.add('-active-like');
-          } else {
-            // Если лайк уже поставлен, то убираем его и уменьшаем счетчик
-            count--;
-            likeCounter.textContent = count;
-            likeButton.classList.remove('-active-like');
-          }
-
-          // Если счетчик нажатий на кнопку стал равен 0, скрываем счетчик
-          if (count === 0) {
-            likeCounter.style.display = 'none';
-          } else {
-            likeCounter.style.display = 'inline';
-          }
-        });
+        parentList.innerHTML += newCommentHTML;
 
         // Очищаем поля ввода после отправки комментария
         document.getElementById('name-input').value = '';
         document.getElementById('comment-input').value = '';
+
+        // После добавления нового комментария, привязываем обработчик события к каждой кнопке лайка
+        const likeButtons = document.querySelectorAll('.like-button');
+        likeButtons.forEach(button => {
+          button.addEventListener('click', handleLikeClick);
+        });
       }
+
+      // Обработчик события для кнопки лайка
+      function handleLikeClick(event) {
+        const likeButton = event.target;
+        const likeCounter = likeButton.parentNode.querySelector('.likes-counter');
+
+        let count = parseInt(likeCounter.textContent);
+
+        if (!likeButton.classList.contains('-active-like')) {
+          // Если лайка еще нет, то добавляем его и увеличиваем счетчик
+          count++;
+          likeCounter.textContent = count;
+          likeButton.classList.add('-active-like');
+        } else {
+          // Если лайк уже поставлен, то убираем его и уменьшаем счетчик
+          count--;
+          likeCounter.textContent = count;
+          likeButton.classList.remove('-active-like');
+        }
+
+        // Если счетчик нажатий на кнопку стал равен 0, скрываем счетчик
+        if (count === 0) {
+          likeCounter.style.display = 'none';
+        } else {
+          likeCounter.style.display = 'inline';
+        }
+      }
+  
+        // const newComment = document.createElement('li');
+        // newComment.className = 'comment';
+  
+        // const commentHeader = document.createElement('div');
+        // commentHeader.className = 'comment-header';
+        // commentHeader.textContent = commenterName;
+  
+        // const commentDate = document.createElement('div');
+        // commentDate.className = 'comment-date';
+        // commentDate.textContent = currentDateTime;
+  
+        // const headerContainer = document.createElement('div');
+        // headerContainer.appendChild(commentHeader);
+        // headerContainer.appendChild(commentDate);
+        // headerContainer.classList.add('comment-header');
+  
+        // const commentBody = document.createElement('div');
+        // commentBody.className = 'comment-body';
+  
+        // const commentTextDiv = document.createElement('div');
+        // commentTextDiv.className = 'comment-text';
+        // commentTextDiv.textContent = commentText;
+  
+        // commentBody.appendChild(commentTextDiv);
+  
+
+        // // Создаем кнопку лайка и счётчик ❤
+        // const grandLikeContainer = document.createElement('div'); // Главный родительский блок
+        // grandLikeContainer.classList.add('likes-footer');
+
+        // const likeContainer = document.createElement('div'); // Родительский блок
+        // likeContainer.classList.add('reverse');
+
+        // const likeButton = document.createElement('button'); // Дочерний элемент, кнопка
+        // likeButton.classList.add('like-button');
+
+        // const likeCounter = document.createElement('span'); // Дочерний элемент, счётчик
+        // likeCounter.classList.add('like-counter');
+
+        // // Добавляем кнопку и счётчик в родительский блок
+        // likeContainer.appendChild(likeButton);
+        // likeContainer.appendChild(likeCounter);
+
+        // // Добавляем родительский блок в главный родительский блок
+        // grandLikeContainer.appendChild(likeContainer);
+
+        // // Добавляем главный родительский блок в тело комментария
+        // newComment.appendChild(headerContainer);
+        // newComment.appendChild(commentBody);
+        // newComment.appendChild(grandLikeContainer);
+
+        // parentList.appendChild(newComment);
+
+        // let count = 0;
+
+        // likeButton.addEventListener('click', function() {
+        //   if (!likeButton.classList.contains('-active-like')) {
+        //     // Если лайка еще нет, то добавляем его и увеличиваем счетчик
+        //     count++;
+        //     likeCounter.textContent = count;
+        //     likeButton.classList.add('-active-like');
+        //   } else {
+        //     // Если лайк уже поставлен, то убираем его и уменьшаем счетчик
+        //     count--;
+        //     likeCounter.textContent = count;
+        //     likeButton.classList.remove('-active-like');
+        //   }
+
+        //   // Если счетчик нажатий на кнопку стал равен 0, скрываем счетчик
+        //   if (count === 0) {
+        //     likeCounter.style.display = 'none';
+        //   } else {
+        //     likeCounter.style.display = 'inline';
+        //   }
+        // });
+
+        // // Очищаем поля ввода после отправки комментария
+        // document.getElementById('name-input').value = '';
+        // document.getElementById('comment-input').value = '';
+      
   
       // Функция для получения текущей даты и времени
       function getCurrentDateTime() {
